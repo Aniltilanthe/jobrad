@@ -1,5 +1,4 @@
-# jobrad
-JobRad Org
+# JobRad Org
 
 JobRad development org
 
