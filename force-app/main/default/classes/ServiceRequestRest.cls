@@ -27,7 +27,7 @@ global with sharing class ServiceRequestRest {
     }
 
     @HttpPost
-    global static String createRecord() {
+    global static Void createRecord() {
         
         RestRequest req = RestContext.request;
         RestResponse res = RestContext.response;
@@ -48,8 +48,6 @@ global with sharing class ServiceRequestRest {
                 responseMap.put('status', 'error');
                 responseMap.put('message', 'Error creating service request: Subject and Description are required fields.');
                 res.responseBody = Blob.valueOf(JSON.serialize(responseMap));
-
-                return 'Error creating service request: Subject and Description are required fields.'; // Exit if required fields are missing
             }
 
             // Create a new Service_Request__c record
@@ -67,7 +65,6 @@ global with sharing class ServiceRequestRest {
             responseMap.put('recordId', newRequest.Id);            
             res.responseBody = Blob.valueOf(JSON.serialize(responseMap));
 
-            return newRequest.Id; // Return success message
         } catch (DMLException dml) {
             Map<String, Object> responseMap = new Map<String, Object>();
             responseMap.put('status', 'error');
@@ -75,7 +72,6 @@ global with sharing class ServiceRequestRest {
             res.responseBody =  Blob.valueOf(JSON.serialize(responseMap));        
             // DML Exception (validation rule failure, required field missing, etc.)
             res.statusCode = 400;    
-            return 'Error creating service request: ' + dml.getDmlMessage(0);
         } catch (Exception e) {
             Map<String, Object> responseMap = new Map<String, Object>();
             responseMap.put('status', 'error');
@@ -83,7 +79,6 @@ global with sharing class ServiceRequestRest {
             res.responseBody = Blob.valueOf(JSON.serialize(responseMap));   
             // General Exception (unexpected error)
             res.statusCode = 500;
-            return 'Error creating service request: ' + e.getMessage();
         }
     }
 }
