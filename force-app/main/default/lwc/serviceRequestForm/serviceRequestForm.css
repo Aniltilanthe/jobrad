@@ -1,0 +1,22 @@
+.service-request-card {
+    /* Add a subtle box shadow for depth and separation from the background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05), 0 6px 20px rgba(0, 0, 0, 0.03);
+    /* Slightly round the corners for a softer look */
+    border-radius: 10px;
+    /* Ensure the background is white for clarity */
+    background-color: #ffffff;
+    /* Add a small border for definition, using a light Salesforce blue */
+    border: 1px solid rgba(0, 112, 210, 0.1);
+    /* Increase padding for more breathing room inside the card */
+    padding: 1rem;
+    /* Set a consistent margin around the card */
+    margin: 1rem;
+}
+
+/* Optional: Add hover effect for interactive cards */
+.service-request-card:hover {
+    /* Increase the shadow subtly on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.05);
+    /* Add a smooth transition for the shadow effect */
+    transition: box-shadow 0.3s ease-in-out;
+}

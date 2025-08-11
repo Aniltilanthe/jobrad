@@ -1,0 +1,56 @@
+name: AutoDeploy Production(Master) Org
+
+on:
+  pull_request:
+    types:
+      - closed
+    
+jobs:
+  build:
+  if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          
+      - uses: actions/setup-node@v3
+
+      - name: Install Salesforce CLI
+        run: |
+          npm install sfdx-cli -g
+          pip install xq
+          pip install yq
+      
+      - name: Install sfdxGit delta
+        run: |
+          echo y | sfdx plugins:install sfdx-git-delta
+          sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --ignore ignorefile.txt  --output "."
+          cat package/package.xml
+       
+      - name: Populate auth file with secret
+        shell: bash
+        run: 'echo ${{secrets.AUTHURL_MASTER}} > SFDX_QA'
+      
+      - uses: sfdx-actions/setup-sfdx@v1
+        with:
+          sfdx-auth-url: ${{ secrets.AUTHURL_MASTER }}
+          
+      - name: Auth with the DevHub
+        run: 'sfdx force:auth:sfdxurl:store -f SFDX_QA -s -a DevHub -d'
+        
+        
+      - name: 'Running checks'
+        run: |
+          'sfdx force:source:deploy -x  package/package.xml --checkonly  -l 'RunLocalTests'  -u DevHub    > ./deploy-report.txt '
+          
+      ###################################
+      # Save results
+      - name: 'Upload test result report'
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: deploy-report
+          path: ./deploy-report.txt  

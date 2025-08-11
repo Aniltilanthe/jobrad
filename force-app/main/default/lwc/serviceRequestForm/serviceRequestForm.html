@@ -1,0 +1,122 @@
+<template>
+    <lightning-card title="Meine Service Requests" icon-name="standard:service_request">
+        
+        <!-- Loading indicator -->
+        <template if:true={isLoading}>
+            <div class="slds-align_absolute-center slds-m-top_large">
+                <lightning-spinner alternative-text="Loading requests..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <lightning-layout multiple-rows="true" class="slds-p-around_medium">
+            <lightning-layout-item size="12" >
+                <lightning-accordion allow-multiple-sections-open class="slds-box slds-border">
+                    <lightning-accordion-section name="Erstellen Sie eine neue Service Request" label="Erstellen Sie eine neue Service Request">
+                        <lightning-layout multiple-rows="true" >
+                            <lightning-layout-item size="12">
+                                <lightning-input label="Thema"
+                                    name="subject"  value={subject} onchange={handleInputChange} required></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12">
+                                <lightning-textarea label="Beschreibung" 
+                                    name="description" value={description} onchange={handleInputChange} required></lightning-textarea>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="12">
+                                <lightning-button
+                                    label="Absenden" 
+                                    title="Submit Request" 
+                                    onclick={handleSubmitRequest}
+                                    variant="brand"
+                                    class="slds-m-top_medium"
+                                    disabled={isSubmitting}
+                                ></lightning-button>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </lightning-accordion-section>
+                </lightning-accordion>
+            </lightning-layout-item>
+            
+            <lightning-layout-item size="12">
+                <hr class="slds-m-vertical_large">
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12">
+                <lightning-layout multiple-rows="true" >
+                    <lightning-layout-item size="12">
+                        <h2 class="slds-text-heading_medium slds-m-bottom_medium">Service Requests</h2>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12">  
+                        
+                        <lightning-layout multiple-rows="true" >
+                            <lightning-layout-item size="10">
+                                <lightning-input
+                                    label="Suche"
+                                    variant="label-hidden"
+                                    type="search"
+                                    value={searchTerm}
+                                    onchange={handleSearchChange}
+                                    placeholder="Suche nach Thema oder Beschreibung"
+                                ></lightning-input>
+                            </lightning-layout-item>
+                            <lightning-layout-item size="2" class="slds-text-align_right">  
+                                <lightning-button
+                                    icon-name="utility:search"
+                                    label="Suchen"
+                                    onclick={onClickSearch}
+                                    variant="neutral"
+                                    class="slds-m-left_x-small slds-m-top_large"
+                                    stretch="true"
+                                ></lightning-button>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12">                        
+                        <lightning-layout multiple-rows="true" >
+                            <template if:true={serviceRequests}>
+                                <template if:true={hasRequests}>
+
+                                    <template for:each={serviceRequests} for:item="request">
+                                        <lightning-layout-item size="12" key={request.Id}>
+
+                                            <lightning-layout multiple-rows="true"  class="service-request-card">
+                                                <lightning-layout-item size="8">         
+                                                    <strong>{request.Subject__c}</strong>               
+                                                </lightning-layout-item>
+                                                <lightning-layout-item size="4">                        
+                                                    <strong>Status:</strong> <span class={request.statusClass}> {request.Status__c}</span>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item size="12">  
+                                                    <p>Beschreibung: {request.Description__c}  </p>                    
+                                                </lightning-layout-item>
+                                                <lightning-layout-item size="12">  
+                                                    <p class="slds-text-body_small slds-text-color_weak">Erstellt am: {request.CreatedDateFormatted}  </p>                
+                                                </lightning-layout-item>
+                                            </lightning-layout>                                            
+                                        </lightning-layout-item>
+                                    </template>
+                                </template>
+                                <template if:false={hasRequests}>
+                                    <lightning-layout-item size="12">  
+                                        <p class="slds-text-align_center slds-text-heading_small slds-m-vertical_large">
+                                            Sie haben noch keine service requests.
+                                        </p>
+                                    </lightning-layout-item>
+                                </template>
+                            </template>
+                        </lightning-layout>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12">
+                        <template if:false={serviceRequests}>
+                            <p class="slds-text-align_center slds-text-heading_small slds-m-vertical_large">
+                                Service Requests konnten nicht geladen werden. Bitte versuchen Sie es später erneut.
+                            </p>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </lightning-layout-item>
+        </lightning-layout>
+            
+
+    </lightning-card>
+</template>
