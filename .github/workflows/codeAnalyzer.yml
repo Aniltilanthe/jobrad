@@ -1,6 +1,8 @@
 name: PMD Source Code Analyzer
 
 on: 
+  push:
+    branches : [master]
   # Scheduled for at the end of every day
   schedule:
     - cron: "0 0 * * *"
