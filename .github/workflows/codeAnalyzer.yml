@@ -10,7 +10,7 @@ on:
       environment:
         description: 'Target environment'
         required: false
-        default: 'development'
+        default: 'production'
       testType:
         description: 'Type of tests to run'
         required: true
@@ -54,24 +54,24 @@ jobs:
       ###################################
       # Send Email Success
       # https://github.com/marketplace/actions/send-email
-      - name: Send mail Success
-        uses: dawidd6/action-send-mail@v3
-        with:
-          # Required mail server address:
-          server_address: smtp.gmail.com
-          # Required mail server port:
-          server_port: 465
-          # Optional (recommended): mail server username: Gmail preferred
-          username: ${{secrets.EMAIL_FROM_USERNAME}}
-          # Optional (recommended) mail server password: Gmail preferred
-          password: ${{secrets.EMAIL_FROM_PASSWORD}}
-          # Required mail subject:
-          subject: Code Analysis Report - ApexClasses - repo ${{github.repository}} - branch ${{github.ref}}
-          # Required recipients' addresses:
-          to: ${{secrets.EMAIL_TO_ADDRESS}}
-          # Required sender full name (address can be skipped):
-          from: Test Report
-          # Optional plain body:
-          body: Build job of your repository - ${{github.repository}} - branch ${{github.ref}} completed with Success ! Link to job run - ${{ github.server_url }}/${{github.repository}}/actions/runs/${{github.run_id}}
-          # Optional attachments:
-          attachments: ./ReportPMD.html
+      # - name: Send mail Success
+      #   uses: dawidd6/action-send-mail@v3
+      #   with:
+      #     # Required mail server address:
+      #     server_address: smtp.gmail.com
+      #     # Required mail server port:
+      #     server_port: 465
+      #     # Optional (recommended): mail server username: Gmail preferred
+      #     username: ${{secrets.EMAIL_FROM_USERNAME}}
+      #     # Optional (recommended) mail server password: Gmail preferred
+      #     password: ${{secrets.EMAIL_FROM_PASSWORD}}
+      #     # Required mail subject:
+      #     subject: Code Analysis Report - ApexClasses - repo ${{github.repository}} - branch ${{github.ref}}
+      #     # Required recipients' addresses:
+      #     to: ${{secrets.EMAIL_TO_ADDRESS}}
+      #     # Required sender full name (address can be skipped):
+      #     from: Test Report
+      #     # Optional plain body:
+      #     body: Build job of your repository - ${{github.repository}} - branch ${{github.ref}} completed with Success ! Link to job run - ${{ github.server_url }}/${{github.repository}}/actions/runs/${{github.run_id}}
+      #     # Optional attachments:
+      #     attachments: ./ReportPMD.html
