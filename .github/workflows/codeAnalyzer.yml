@@ -45,7 +45,7 @@ jobs:
 
       # Upload PMD report as an artifact
       - name: 'Upload PMD report'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: PMD-Apex-Report
           path: ./ReportPMD.html
