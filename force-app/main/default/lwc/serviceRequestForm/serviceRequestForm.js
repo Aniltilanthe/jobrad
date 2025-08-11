@@ -1,5 +1,6 @@
 import { LightningElement, track  } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import LightningToast from 'lightning/toast';
 import getSessionId from '@salesforce/apex/SessionController.getSessionId';
 
 // Constants for REST endpoints
@@ -82,18 +83,18 @@ export default class ServiceRequestForm extends LightningElement {
                     };
                 });
                 this.allServiceRequests = processedData; // Store the full list
-                this.serviceRequests = [...processedData];
-                this.showToast('Requests loaded successfully.', 'success');
+                this.serviceRequests = [...processedData]; // Display the full list initially
             } else {
                 this.serviceRequests = null; // Set to null to display the error message
                 this.allServiceRequests = null;
                 const errorData = await response.json();
-                this.showToast('Error loading requests: ${response.status} ${errorData.message}', 'error');
+                this.showToast('Error loading data: ${response.status} ${errorData.message}', 'error');
             }
         } catch (error) {
             this.serviceRequests = null; // Set to null to display the error message
             this.allServiceRequests = null;
-            console.error(error);
+            console.error("Error happened ", error);
+            console.error("Error happened ", error.message);
             this.showToast('Error:  ${error}', 'error');
         } finally {
             this.isLoading = false;
@@ -177,7 +178,9 @@ export default class ServiceRequestForm extends LightningElement {
 
             if (response.ok) {
                 const data = await response.json();
-                this.showToast(data.message || 'Request sent successfully!', 'success');
+                console.log('Response Data : ', data);
+                console.log('Response data.message : ', data.message);
+                this.showToast(data.message || 'Record created successfully!', 'success');
                 // Reset fields
                 this.subject = '';
                 this.description = '';
@@ -197,29 +200,18 @@ export default class ServiceRequestForm extends LightningElement {
         }
     }
 
-
-
-
-
     /**
      * @description Displays a temporary feedback message.
      * @param {string} message The message to display.
      * @param {'success' | 'error'} type The type of message (determines color).
      */
     showToast(message, type) {
-        const event = new ShowToastEvent({
-            title: type == 'success' ? 'Success' : 'Error',
+        LightningToast.show({
+            label: type == 'success' ? 'Success' : 'Error',
             message: message,
+            mode: 'dismissible',
             variant: type
-        });
-        this.dispatchEvent(event);
-
-        // LightningToast.show({
-        //     label: type == 'success' ? 'Success' : 'Error',
-        //     message: message,
-        //     mode: 'sticky',
-        //     variant: type
-        // }, this);
+        }, this);
     }
 
 
