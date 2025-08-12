@@ -1,0 +1,59 @@
+name: Salesforce CI/CD Deployment
+
+# Triggers the workflow on a push to the 'main' branch
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'production'
+      testType:
+        description: 'Type of tests to run'
+        required: true
+        default: 'integration'
+
+# Defines the jobs to be executed in the workflow
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Checks out the repository code
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Installs the Salesforce CLI
+      - name: Install Salesforce CLI
+        run: |
+          npm install @salesforce/cli --global
+
+      # Step 3: Authenticates to the Salesforce org using the stored secrets
+      - name: Populate auth file with secret
+        shell: bash
+        run: 'echo ${{secrets.AUTHURL_MASTER}} > SFDX_QA'
+      
+      - uses: sfdx-actions/setup-sfdx@v1
+        with:
+          sfdx-auth-url: ${{ secrets.AUTHURL_MASTER }}
+          
+      - name: Auth with the DevHub
+        run: 'sfdx force:auth:sfdxurl:store -f SFDX_QA -s -a DevHub -d'
+
+      # Step 4: Deploys the source code to the authenticated org
+      - name: Deploy Source to Org
+        run: |
+          sf project deploy start --source-dir force-app
+
+      # Step 5: Runs all Apex tests in the org
+      - name: Run Apex Tests
+        run: |
+          sf apex run test --testlevel RunAllTestsInOrg --resultformat human --outputdir test-results --codecoverage
+
+      # Optional Step 6: Publishes the deployment results and test results as artifacts
+      - name: Publish Deployment and Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-artifacts
+          path: |
+            test-results/

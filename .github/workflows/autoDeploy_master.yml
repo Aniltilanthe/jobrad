@@ -1,16 +1,6 @@
 name: AutoDeploy Production(Master) Org
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Target environment'
-        required: true
-        default: 'production'
-      testType:
-        description: 'Type of tests to run'
-        required: true
-        default: 'integration'
   pull_request:
     types:
       - closed
