@@ -20,14 +20,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
 
       - name: Install Salesforce CLI
         run: |
+          npm uninstall -g sfdx-cli
           npm install sfdx-cli -g
           pip install xq
           pip install yq
@@ -35,7 +36,7 @@ jobs:
       - name: Install sfdxGit delta
         run: |
           sfdx update
-          echo y | sfdx plugins:install sfdx-git-delta@5.23.0
+          echo y | sfdx plugins:install sfdx-git-delta
           sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --ignore ignorefile.txt  --output "."
           cat package/package.xml
        
