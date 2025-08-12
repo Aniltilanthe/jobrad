@@ -1,4 +1,4 @@
-name: Salesforce CI/CD Deployment
+name: Manual Full Deployment
 
 # Triggers the workflow on a push to the 'main' branch
 on:
@@ -55,5 +55,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: deployment-artifacts
-          path: |
-            test-results/
+          path: ./deploy-report.txt  
