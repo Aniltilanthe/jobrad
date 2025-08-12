@@ -34,7 +34,8 @@ jobs:
       
       - name: Install sfdxGit delta
         run: |
-          echo y | sfdx plugins:install sfdx-git-delta@6.15.2
+          sfdx update
+          echo y | sfdx plugins:install sfdx-git-delta@5.23.0
           sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --ignore ignorefile.txt  --output "."
           cat package/package.xml
        
